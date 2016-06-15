@@ -126,7 +126,7 @@ module.exports = function(app, passport) {
       }
     });
 
-    router.route("/operationlog/logDetail/:logId")
+    router.route("/operationlog/user/:logId")
       .get(function(req, res){
         if (req.params.logId) {
         Operationlog.find({ _id : req.params.logId }, function (err, operationlog) {
@@ -146,13 +146,9 @@ module.exports = function(app, passport) {
       var lat             = req.body.latitude;
       var long            = req.body.longitude;
       var distance        = req.body.distance;
-      var male            = req.body.male;
-      var female          = req.body.female;
-      var other           = req.body.other;
-      var minAge          = req.body.minAge;
-      var maxAge          = req.body.maxAge;
-      var favLang         = req.body.favlang;
-      var reqVerified     = req.body.reqVerified;
+      var fishName        = req.body.fishName;
+      var fishTotalWeight = req.body.fishTotalWeight;
+      var fishCount       = req.body.fishCount;
       var userId          = req.body.userId;
 
       // Opens a generic Mongoose Query. Depending on the post body we will...
@@ -168,29 +164,24 @@ module.exports = function(app, passport) {
         maxDistance: distance * 1609.34, spherical: true});
       }
 
-      // ...include filter by Gender (all options)
-      if(male || female || other){
-        query.or([{ 'gender': male }, { 'gender': female }, {'gender': other}]);
+      // ...include filter by fishName
+      if(fishName){
+        query = query.where('fishName').equals(fishName);
       }
 
-      // ...include filter by Min Age
-      if(minAge){
-        query = query.where('age').gte(minAge);
+      // ...include filter by fishTotalWeight
+      if(fishTotalWeight){
+        query = query.where('fishTotalWeight').gte(fishTotalWeight);
       }
 
-      // ...include filter by Max Age
-      if(maxAge){
-        query = query.where('age').lte(maxAge);
+      // ...include filter by fishCount
+      if(fishCount){
+        query = query.where('fishCount').gte(fishCount);
       }
 
-      // ...include filter by Favorite Language
-      if(favLang){
-        query = query.where('favlang').equals(favLang);
-      }
-
-      // ...include filter for HTML5 Verified Locations
-      if(reqVerified){
-        query = query.where('htmlverified').equals("Yep (Thanks for giving us real data!)");
+      // ...include filter by userId
+      if(userId){
+        query = query.where('userId').ne(userId);
       }
 
       // Execute Query and Return the Query Results

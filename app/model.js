@@ -2,7 +2,7 @@
 var mongoose    = require('mongoose');
 var Schema      = mongoose.Schema;
 
-// Creates a User Schema. This will be the basis of how user data is stored in the db
+// Creates a Operationlog Schema.
 var Operationlog = new Schema({
     username: {type: String, required: true},
     Phone: {type: Number, required: true},
@@ -13,7 +13,7 @@ var Operationlog = new Schema({
     dealorInfo: {type: String},
     vesseloperator:{type: String, required: true},
     fishName: {type: String, required: true},
-    fishTotalWeight: {type: String, required: true},
+    fishTotalWeight: {type: Number, required: true},
     fishCount: {type: Number, required: true},
     fishAppxWeight: {type: String, required: true},
     fishAppxLength: {type: String, required: true},
@@ -30,8 +30,7 @@ Operationlog.pre('save', function(next){
     next();
 });
 
-// Indexes this schema in 2dsphere format (critical for running proximity searches)
 Operationlog.index({location: '2dsphere'});
 
-// Exports the UserSchema for use elsewhere. Sets the MongoDB collection to be used as: "scotch-users"
+// Exports the UserSchema for use elsewhere.
 module.exports = mongoose.model('Operationlog', Operationlog);
